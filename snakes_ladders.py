@@ -8,6 +8,7 @@ import numpy as np
 #Various libraries 
 import os, re
 import datetime
+import random
 
 from functools import reduce
 
@@ -20,31 +21,48 @@ from flask import request, redirect
 ####### Classes #######
 #######################
 
-class Dice():
-    def ___init__(self, x:str):
-        self.x = 'x'
+class Dice:
+    def __init__(self, size:int):
+        self.size = size
 
-class Player():
-    def ___init__(self, x:str):
-        self.x = 'x'
-    
+    def roll(self) -> int:
+        return random.choice(np.arange(1, self.size + 1))
+
+class Player:
+    def __init__(self, id:int, name:str, position:int = 0, score:int = 0):
+        self.id = id
+        self.name = name
+        self.position = position
+        self.score = score
+
+    def change_position(self, change: int) -> None:
+        self.position += change
+
+    def change_score(self, change: int) -> None:
+        self.score += change
+
     def __repr__(self) -> str:
-        return '<Task %r>' % self.id
+        return f'Player {self.id}: {self.name} - Position: {self.position} - Score: {self.score}'
 
-class Snake_Ladder():
-    def ___init__(self, x:str):
-        self.x = 'x'
+class Snake_Ladder:
+    def __init__(self, type:str, start: int, end: int):
+        self.type = type
+        self.start = start
+        self.end = end
 
-class Box():
-    def ___init__(self, x:str):
-        self.x = 'x'   
+class Box:
+    def __init__(self, has_snake_ladder: bool, has_special_event: bool):
+        self.has_snake_ladder = has_snake_ladder
+        self.has_special_event = has_special_event
 
-class Board():
-    def ___init__(self, x:str):
-        self.x = 'x' 
+class Board:
+    def __init__(self, num_boxes:int, length: int, width: int):
+        self.num_boxes = num_boxes
+        self.length = length
+        self.width = width
 
 class Game():
-    def ___init__(self, x:str):
+    def __init__(self, x:str):
         self.x = 'x'
 
 ####################
@@ -62,7 +80,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'Hello There!'
+     return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(debug = True)

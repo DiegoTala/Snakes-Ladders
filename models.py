@@ -68,7 +68,7 @@ class Cell:
         self.has_special_event = has_special_event
 
 class Game:
-    def __init__(self, players:list, board:Board, dices:list, turn_limit:int) -> None:
+    def __init__(self, players:list, board:Board, dices:list, turn_limit:int, diff: str) -> None:
         self.players = players
         self.num_players = len(players)
         self.board = board

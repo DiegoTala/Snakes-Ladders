@@ -9,12 +9,8 @@ class Player:
         self.score = 0
         self.pos = [0,0]
 
-    def change_pos(self, move:int, board_x:int, board_y:int) -> list:
-        tmp_pos = [(self.pos[0]+move)%board_x, self.pos[1]]
-        
-        ## work on y ##
-
-        self.pos = [(self.pos[0]+move)%board_x, self.pos[1]]
+    def change_pos(self, move:int, board_x:int, board_y:int) -> None:
+        self.pos = [(self.pos[0] + move) % board_x, ((self.pos[0]+move) // board_y) + self.pos[1]]
         
     def change_score(self, change: int) -> None:
         self.score += change

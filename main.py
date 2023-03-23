@@ -13,6 +13,7 @@ globals.turns = 10
 globals.difficulty = 'Normal'
 globals.current_turn = 1
 globals.idxs = {}
+globals.game = None
 
 @app.get('/')
 def home():
@@ -20,23 +21,37 @@ def home():
 
 @app.post('/')
 def data():
-    globals.num_users = request.form['num_users']
-    globals.board_x = request.form['board_width']
-    globals.board_y = request.form['board_height']
+    globals.num_users = int(request.form['num_users'])
+    globals.board_x = int(request.form['board_width'])
+    globals.board_y = int(request.form['board_height'])
 
     #Added by Diego T.
     globals.turns = request.form['num_turns']
     globals.difficulty = request.form['difficulty']
-    
+
     globals.idxs = {user+1:[0,0] for user in range(globals.num_users)}
     globals.idxs[1] = [0,1]
     globals.idxs[2] = [3,0]
-    print(request.form['num_users'], request.form['board_width'], request.form['board_height'], globals.idxs)
+
+    # game start with Game()
+
+    print(request.form['num_users'], request.form['board_width'], request.form['board_height'], globals.idxs, globals.turns, globals.difficulty)
     return redirect(url_for('board'))
 
 @app.get('/board')
 def board():
+    create_game()
     return render_template('board.html', board_x=globals.board_x, board_y=globals.board_y, num_users=globals.num_users, idxs=globals.idxs)
+
+def create_game() -> None:
+    players = [Player(x, f'Player {x}') for x in list(range(1, globals.num_users + 1))]
+    dices = [Dice(), Dice()]
+    board = Board(globals.board_x, globals.board_y)
+
+    globals.game = Game(players = players, dices = dices, board = board, difficulty = globals.difficulty)
+
+    print(globals.game.snakes)
+    print(globals.game.ladders)
 
 @app.post('/game')
 def game():
@@ -51,10 +66,13 @@ def game():
             increase = game.roll_dices(dices = game.dices)
             game.change_player_pos_and_score(player, increase)
             
+            if game.win_game(player):
+                print(f'El jugador {player.name} ha ganado')
+
         globals.current_turn += 1
 
     else:
-        print('The have have ended')
+        print('The game have ended')
     print(globals.board_x, globals.board_y)
 
 if __name__ == '__main__':

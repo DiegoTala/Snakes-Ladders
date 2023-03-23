@@ -44,6 +44,9 @@ class Player:
 
         self.pos = [(self.pos[0] + move) % board_x, ((self.pos[0] + move) // board_y) + self.pos[1]]
         
+        if self.pos[1] > board_y - 1:
+            self.pos = [board_x - 1, board_y - 1]
+
     def change_score(self, change: int) -> None:
         """
         Function that changes the attribute Score of the Player.
@@ -66,8 +69,8 @@ class Player:
 
 class Board:
     def __init__(self, width:int, height:int) -> None:
-        self.x = width
-        self.y = height
+        self.width = width
+        self.height = height
 
     def generate_cells(self) -> list: 
         return [[Cell(x, y) for y in np.arange(0, self.height)] for x in np.arange(0, self.width)]
@@ -123,8 +126,8 @@ class Game:
                             'Legendaria': 0.01}
         
         #Determine the number of Snakes & Ladders the game will have according to the difficulty
-        self.n_ladders = self.get_n_ladders(self, board = self.board, threshold = 0.9)
-        self.n_snakes = self.get_n_snakes(self, board = self.board, threshold = 0.9)
+        self.n_ladders = self.get_n_ladders(board = self.board, threshold = 0.9)
+        self.n_snakes = self.get_n_snakes(board = self.board, threshold = 0.9)
         
         #Generate all the Cells of the Board
         self.cells = self.board.generate_cells()
@@ -158,13 +161,13 @@ class Game:
             return sum(final_roll)
 
     def get_n_snakes(self, board: Board, threshold: float = 0.9) -> int:
-        n = round(threshold * ((self.board.width + self.board.height) / 2))
+        n = round(threshold * ((board.width + board.height) / 2))
         q = 1 - self.probability[self.difficulty]
         
         return binom.rvs(n, q)
         
     def get_n_ladders(self, board: Board, threshold: float = 0.9) -> int:
-        n = round(threshold * ((self.board.width + self.board.height) / 2))
+        n = round(threshold * ((board.width + board.height) / 2))
         p = self.probability[self.difficulty]
 
         return binom.rvs(n, p)
@@ -218,3 +221,9 @@ class Game:
                 pass
         else:
             player.change_score(move * 10)
+
+    def win_game(self, player:Player) -> bool:
+        last_cell = self.cells[-1][-1]
+        
+        return player.pos == [last_cell.x, last_cell.y]
+

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Snakes and Ladders</title>
+{% endblock %}
+
+{% block body %} 
+<div class="content">
+    <table id="table_board">
+        <tbody>
+            <!-- <canvas id="canvas_board">
+        
+            </canvas> -->
+            {% for row in range(board_y-1, -1, -1) %}
+                <tr class="board_row">
+                    {% for col in range(board_x) %}
+                        <td class="cell" pos_x={{col}} pos_y={{row}}>
+                            <div class="cell_div">
+                                {% for user in range(num_users) %}
+                                    {% if col == 0 and row == 0 %}
+                                        <p style="position: absolute; width: 100%;" class="text-center">Start</p>
+                                    {% endif %}
+                                    {% if col == board_x-1 and row == board_y-1 %}
+                                        <p style="position: absolute; width: 100%;" class="text-center">End</p>
+                                    {% endif %}
+                                    {% if idxs[user+1][0] == col and idxs[user+1][1] == row %}
+                                        <img class="player_icon" id="player_num_{{user+1}}" src="/static/P{{user+1}}.png">
+                                        <!-- "{{url_for('static', filename='P1.png')}}" -->
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <!-- "{{url_for('static', filename='P1.png')}}" -->
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="table_players" class="table table-bordered table-striped text-center">
+        <thead>
+            <tr>
+                <th colspan={{num_users+1}} class="text-center">Players</th>
+            </tr>
+            <tr>
+                {% for user in range(num_users) %}
+                    <th class="players_header">Player {{user+1}} | x={{idxs[user+1][0]}}, y={{idxs[user+1][1]}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for user in range(num_users) %}
+                    <td class="text-center">0</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered text-center">
+        <tbody>
+            <td>Dice1</td>
+            <td>Dice2</td>
+            <td>Roll!</td>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const num_users = '{{num_users}}';
+    const player_hovers = document.getElementsByClassName('players_header');
+
+    for(let i = 0; i < player_hovers.length; i++) {
+        player_hovers[i].addEventListener("mouseover", function() {
+            console.log("Hover player: " + (i+1));
+            Array.from(document.getElementsByClassName('player_icon')).forEach((player) => {
+                player.style.opacity = 0;
+            })
+            document.getElementById(`player_num_${i+1}`).style.opacity = 1;
+        });
+
+        player_hovers[i].addEventListener('mouseout', function() {
+            Array.from(document.getElementsByClassName('player_icon')).forEach((player) => {
+                player.style.opacity = 0.7;
+            })
+        })
+    }
+</script>
+{% endblock %}

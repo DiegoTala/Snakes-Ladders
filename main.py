@@ -12,7 +12,7 @@ globals.board_y = 10
 globals.turns = 10
 globals.difficulty = 'Normal'
 globals.current_turn = 1
-
+globals.idxs = {}
 
 @app.get('/')
 def home():
@@ -27,13 +27,16 @@ def data():
     #Added by Diego T.
     globals.turns = request.form['num_turns']
     globals.difficulty = request.form['difficulty']
-
-    print(request.form['num_users'], request.form['board_width'], request.form['board_height'], request.form['num_turns'], request.form['difficulty'])
+    
+    globals.idxs = {user+1:[0,0] for user in range(globals.num_users)}
+    globals.idxs[1] = [0,1]
+    globals.idxs[2] = [3,0]
+    print(request.form['num_users'], request.form['board_width'], request.form['board_height'], globals.idxs)
     return redirect(url_for('board'))
 
 @app.get('/board')
 def board():
-    return f'{globals.num_users} {globals.board_x} {globals.board_y} {globals.turns} {globals.difficulty}'
+    return render_template('board.html', board_x=globals.board_x, board_y=globals.board_y, num_users=globals.num_users, idxs=globals.idxs)
 
 @app.post('/game')
 def game():
@@ -52,6 +55,7 @@ def game():
 
     else:
         print('The have have ended')
+    print(globals.board_x, globals.board_y)
 
 if __name__ == '__main__':
     app.run(Debug = True)

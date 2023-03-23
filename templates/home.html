@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Snakes and Ladders</title>
+{% endblock %}
+
+{% block body %} 
+<div class="content">
+    <form method="post" action="#">
+        <input class="input_form" placeholder="Number of Users" name="num_users" type="number" min="2" required max="6" />
+        <input class="input_form" placeholder="Board Width" name="board_width" type="number" min="10" required />
+        <input class="input_form" placeholder="Board Height" name="board_height" type="number" min="10" required />
+        <button type="submit">Send data</button>
+    </form>
+</div>
+{% endblock %}

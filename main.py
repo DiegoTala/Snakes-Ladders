@@ -25,7 +25,6 @@ def data():
     globals.board_x = int(request.form['board_width'])
     globals.board_y = int(request.form['board_height'])
 
-    #Added by Diego T.
     globals.turns = request.form['num_turns']
     globals.difficulty = request.form['difficulty']
 
@@ -73,6 +72,10 @@ def game():
 
     else:
         print('The game have ended')
+        max_score = max([player.score for player in game.players])
+        winners = [player.name for player in game.players if player.score == max_score]
+        print(f'El jugador(es) ganador(es) es(son){winners}')
+
     print(globals.board_x, globals.board_y)
 
 if __name__ == '__main__':

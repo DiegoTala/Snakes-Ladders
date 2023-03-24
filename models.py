@@ -69,19 +69,79 @@ class Player:
 
 
 class Board:
+
+    """
+    Board Class.
+
+    Attributes:
+        width (int): The width of the board.
+        height (str): The height of the board.
+    """
     def __init__(self, width:int, height:int) -> None:
+        """
+        Function that defines the board's size.
+
+        Args:
+            width (int)
+            height (int)
+
+        Returns:
+            None
+        """
+
         self.width = width
         self.height = height
 
+
     def generate_cells(self) -> list: 
+        """
+        Function that generates the cells according to the width and height.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         return [[Cell(x, y) for y in np.arange(0, self.height)] for x in np.arange(0, self.width)]
 
+
 class Ladder:
+
+    """
+    Ladder Class.
+
+    Attributes:
+        n_ladders (int): The number of Ladders the game will have.
+        ladders (list): A list with the path (initial and final position) of every Ladder of the game
+
+    """
+
     def __init__(self, id:int, board_x:int, board_y: int) -> None:
+        """
+        Init method to build Ladder class.
+
+        Args:
+        board_x (int): Board's x position.
+        board_y (int) : Board's y position.
+
+        Returns:
+            None
+        """
         self.id = id
         self.path = self.generate_pos(board_x, board_y)
 
     def generate_pos(self, board_x:int, board_y:int) -> dict:
+
+        """
+        Function that defines where the Ladders can start and end.
+
+        Args:
+        None
+
+        Returns:
+            dict
+        """
         # min board size -> x:10, y:10
         begin = [random.randint(1, board_x - 1), random.randint(0, board_y - 3)] # [x,y]
         end = [random.randint(0, board_x - 1), random.randint(begin[1] + 1, board_y - 1)]
@@ -89,11 +149,41 @@ class Ladder:
         return {'begin': begin, 'end': end}
     
 class Snake:
+    """
+    Snake Class.
+
+    Attributes:
+        n_snake (int): The number of Snakes the game will have.
+        snakes (list): A list with the path (initial and final position) of every Snake of the game
+        board_x (int): Board's x position.
+        board_y (int) : Board's y position.
+    """
+
     def __init__(self, id:int, board_x:int, board_y: int) -> None:
+        """
+        Init method to build Snake class.
+
+        Args:
+        board_x (int): Board's x position.
+        board_y (int) : Board's y position.
+
+        Returns:
+            None
+        """
         self.id = id
         self.path = self.generate_pos(board_x, board_y)
 
     def generate_pos(self, board_x:int, board_y:int) -> dict:
+        """
+        Function that defines where the Snakes can start and end.
+
+        Args:
+        None
+
+        Returns:
+            dict
+        """
+    
         # min board size -> x:10, y:10
         begin = [random.randint(0, board_x - 1), random.randint(1, board_y - 1)] # [x,y]
         end = [random.randint(0, board_x - 1), random.randint(0, begin[1] - 1)]
@@ -101,14 +191,58 @@ class Snake:
         return {'begin': begin, 'end': end}
 
 class Dice:
+    """
+    Dice Class.
+
+    Attributes:
+        sides (int): The number of sides the Dice has.
+        dices (list): A list of Dices Objects.
+    """
     def __init__(self, sides:int = 6) -> None:
+        """
+        Init method to build Dice class.
+
+        Args:
+        sides (int): The number of sides the Dice has.
+
+        Returns:
+            None
+        """
+    
         self.sides = sides
 
     def get_roll(self) -> int:
+        """
+        Function that defines the result of the Dice roll.
+
+        Args:
+        None
+
+        Returns:
+            int
+        """
         return random.randint(1, self.sides)
     
+    
 class Cell:
+    """
+    Cell Class.
+
+    Attributes:
+        x (int): The x coordinate of the cell.
+        y (int): The y coordinate of the cell.
+    """
     def __init__(self, x:int, y:int) -> None:
+        """
+        Init method to build Cell class.
+
+        Args:
+        x (int): The x coordinate of the cell.
+        y (int): The y coordinate of the cell.
+
+        Returns:
+            None
+        """
         self.x = x
         self.y = y
         self.has_object = False

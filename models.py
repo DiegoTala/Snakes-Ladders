@@ -65,7 +65,7 @@ class Player:
         """
         Create the string representation of the Player Class.
         """
-        return f'Player {self.id}: {self.name} | Position: {self.position} | Score: {self.score}'
+        return f'Player {self.id}: {self.name} | Position: {self.pos} | Score: {self.score}'
 
 
 class Board:
@@ -281,7 +281,7 @@ class Game:
         """
 
         #Apply a shuffle to determine the order of turns of the Players
-        self.players = random.shuffle(players)
+        self.players = players
         self.board = board
         self.dices = dices
         self.difficulty = difficulty
@@ -331,10 +331,10 @@ class Game:
         #Determine extra roll
         if final_roll[0] == final_roll[1]:
             print('You Get an Extra Roll!!!')
-
+            print(dices[0].get_roll() + sum(final_roll))
             return dices[0].get_roll() + sum(final_roll)
         else: 
-            
+            print(sum(final_roll))
             return sum(final_roll)
 
     def get_n_snakes(self, board: Board, threshold: float = 0.9) -> int:
@@ -457,13 +457,15 @@ class Game:
         Returns:
             None
         """
-        player.change_pos(move, self.board.x, self.board.y)
+        player.change_pos(move, self.board.width, self.board.height)
+        print(f'landed on {player.pos}')
         cell = self.cells[player.pos[0]][player.pos[1]]
 
         if cell.has_object:
             try:
                 new_pos = cell.object.path
-                player.pos = [new_pos['begin'], new_pos['end']]
+                print(new_pos)
+                player.pos = new_pos['end']
 
                 if type(cell) == Ladder:
                     player.change_score((move * 10) + 1)

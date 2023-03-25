@@ -6,84 +6,164 @@
 
 {% block body %} 
 <div class="content">
-    <table id="table_board">
-        <tbody>
-            <!-- <canvas id="canvas_board">
-        
-            </canvas> -->
-            {% for row in range(board_y-1, -1, -1) %}
-                <tr class="board_row">
-                    {% for col in range(board_x) %}
-                        <td class="cell" pos_x={{col}} pos_y={{row}}>
-                            <div class="cell_div">
-                                {% for user in range(num_users) %}
-                                    {% if col == 0 and row == 0 %}
-                                        <p style="position: absolute; width: 100%;" class="text-center">Start</p>
-                                    {% endif %}
-                                    {% if col == board_x-1 and row == board_y-1 %}
-                                        <p style="position: absolute; width: 100%;" class="text-center">End</p>
-                                    {% endif %}
-                                    {% if idxs[user+1][0] == col and idxs[user+1][1] == row %}
-                                        <img class="player_icon" id="player_num_{{user+1}}" src="/static/P{{user+1}}.png">
-                                        <!-- "{{url_for('static', filename='P1.png')}}" -->
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <!-- "{{url_for('static', filename='P1.png')}}" -->
-                        </td>
+    <div id="content_players">
+        <table id="table_players" class="table table-bordered table-striped text-center">
+            <thead>
+                <tr>
+                    <th colspan={{num_users+1}} class="text-center">Players</th>
+                </tr>
+                <tr>
+                    {% for user in range(num_users) %}
+                        <th class="players_header">Player {{user+1}}</th> 
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <tr>
+                    {% for user in range(num_users) %}
+                        <td class="text-center" id="score_player_{{user+1}}">0</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center" id="show_players">Show Players</div>
+    </div>
 
-    <table id="table_players" class="table table-bordered table-striped text-center">
-        <thead>
-            <tr>
-                <th colspan={{num_users+1}} class="text-center">Players</th>
-            </tr>
-            <tr>
-                {% for user in range(num_users) %}
-                    <th class="players_header">Player {{user+1}} | x={{idxs[user+1][0]}}, y={{idxs[user+1][1]}}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                {% for user in range(num_users) %}
-                    <td class="text-center">0</td>
-                {% endfor %}
-            </tr>
-        </tbody>
-    </table>
+    <div id="content_dice" class="text-center">
+        <div class="text-center" id="show_dice">Show Dice</div>
+        <table id="table_dice" class="table table-bordered table-striped textcenter">
+            <tbody>
+                <tr>
+                    <td id="roll_btn">Roll</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <table class="table table-bordered text-center">
+    <!-- <table class="table table-bordered text-center">
         <tbody>
             <td>Dice1</td>
             <td>Dice2</td>
             <td>Roll!</td>
         </tbody>
+    </table> -->
+
+    <table id="table_board">
+        <tbody>
+            <!-- <canvas id="canvas_board">
+        
+            </canvas> -->
+            {% set count = [] %}
+            {% for row in range(board_y-1, -1, -1) %}
+                <tr class="board_row" row={{row}}>
+                    {% if row%2 == 0 %}
+                        {% for col in range(board_x) %}
+                            <td class="cell" pos_x={{col}} pos_y={{row}}>
+                                <div class="cell_div">
+                                    <p style="position: absolute; width: 100%;" class="text-center text_idx"></p>
+                                    {% for user in range(num_users) %}
+                                        {% if idxs[user+1][0] == col and idxs[user+1][1] == row %}
+                                            <img class="player_icon" id="player_num_{{user+1}}" src="/static/P{{user+1}}.png">
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        {% endfor %}
+                    {% else %}
+                        {% for col in range(board_x-1, -1, -1) %}
+                            <td class="cell" pos_x={{col}} pos_y={{row}}>
+                                <div class="cell_div">
+                                    <p style="position: absolute; width: 100%;" class="text-center text_idx"></p>
+                                    {% for user in range(num_users) %}
+                                        {% if idxs[user+1][0] == col and idxs[user+1][1] == row %}
+                                            <img class="player_icon" id="player_num_{{user+1}}" src="/static/P{{user+1}}.png">
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 
 <script>
+    const board_x = parseInt('{{board_x}}');
+    const board_y = parseInt('{{board_y}}');
+    let table_rows = Array.from(document.getElementsByClassName('board_row'));
+    let cell_counter = board_x * board_y;
+
+    table_rows.forEach((row) => {
+        for (let i=board_x-1; i>=0; i--) {
+            row.querySelector(`[pos_x="${i}"]`).getElementsByTagName('p')[0].innerHTML = cell_counter;
+            cell_counter--;
+        }
+    });
+
     const num_users = '{{num_users}}';
     const player_hovers = document.getElementsByClassName('players_header');
 
     for(let i = 0; i < player_hovers.length; i++) {
-        player_hovers[i].addEventListener("mouseover", function() {
-            console.log("Hover player: " + (i+1));
-            Array.from(document.getElementsByClassName('player_icon')).forEach((player) => {
-                player.style.opacity = 0;
-            })
-            document.getElementById(`player_num_${i+1}`).style.opacity = 1;
+        player_hovers[i].addEventListener("click", function() {
+            console.log("Click player: " + (i+1));
+            // Array.from(document.getElementsByClassName('player_icon')).forEach((player) => {
+            //     player.style.opacity = 0;
+            // })
+            // document.getElementById(`player_num_${i+1}`).style.opacity = 1;
+            document.getElementById(`player_num_${i+1}`).scrollIntoView();
         });
-
-        player_hovers[i].addEventListener('mouseout', function() {
-            Array.from(document.getElementsByClassName('player_icon')).forEach((player) => {
-                player.style.opacity = 0.7;
-            })
-        })
     }
+
+    const snakes = JSON.parse('{{game.snakes}}'.replaceAll('&#39;','"'));
+    const ladders = JSON.parse('{{game.ladders}}'.replaceAll('&#39;','"'));
+    console.log(snakes, ladders);
+
+    table_rows = table_rows.reverse();
+
+    snakes.forEach((snake) => {
+        const start = table_rows[snake.begin[1]].querySelector(`[pos_x="${snake.begin[0]}"]`);
+        const end = table_rows[snake.end[1]].querySelector(`[pos_x="${snake.end[0]}"]`);
+        add_connection(start, end, 'snake');
+    });
+
+    ladders.forEach((ladder) => {
+        const start = table_rows[ladder.begin[1]].querySelector(`[pos_x="${ladder.begin[0]}"]`);
+        const end = table_rows[ladder.end[1]].querySelector(`[pos_x="${ladder.end[0]}"]`);
+        add_connection(start, end, 'ladder');
+    });
+
+    function add_connection(start, end, type) {
+        new LeaderLine(
+            start,
+            end,
+            {
+                color: (type == 'snake') ? 'green' : 'brown',
+                size: (type == 'snake') ? 5 : 10,
+                dropShadow: true,
+                endPlug: 'behind',
+                path: (type == 'snake') ? 'fluid' : 'straight'
+            }
+        );
+    }
+
+    document.getElementById('roll_btn').addEventListener('click', function() {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.open('get', 'http://127.0.0.1:5000/move_players', false);
+        xmlHttp.send(null);
+        const player_chars = JSON.parse(xmlHttp.responseText);
+        console.log(`score_player_${player_chars.id}`);
+
+        document.getElementById(`score_player_${player_chars.id}`).innerHTML = player_chars.score;
+        const to_remove = document.getElementById(`player_num_${player_chars.id}`);
+        const new_img = to_remove.cloneNode(true);
+        to_remove.remove();
+
+        console.log(table_rows[player_chars.pos[1]].querySelector(`[pos_x="${player_chars.pos[0]}"]`).getElementsByClassName('cell_div')[0])
+        // return
+
+        table_rows[player_chars.pos[1]].querySelector(`[pos_x="${player_chars.pos[0]}"]`).getElementsByClassName('cell_div')[0].appendChild(new_img);
+    })
 </script>
 {% endblock %}

@@ -8,7 +8,9 @@
 <div class="content row text-center">
     <div class="col-sm-2"></div>
     <div class="col-sm-8">
-        <form method="post" action="#">
+        <form method="post" action="#" id="home_form">
+            <h3>Snakes & Ladders</h3>
+            <h6>Made by Alejadra Murillo, Diego Talamantes & Diego Mejía</h6>
             <input class="form-control input_form" placeholder="Number of Users" name="num_users" type="number" min="2" required max="6" />
             <input class="form-control input_form" placeholder="Board Width" name="board_width" type="number" min="10" required max="100"/>
             <input class="form-control input_form" placeholder="Board Height" name="board_height" type="number" min="10" required max="100"/>
@@ -19,7 +21,7 @@
                 <option>Difícil</option>
                 <option>Legendaria</option>
             </select>
-            <button type="submit">Send data</button>
+            <button class="btn btn-default" type="submit" style="border: 0.1em solid black;">Send data</button>
         </form>
     </div>
 </div>

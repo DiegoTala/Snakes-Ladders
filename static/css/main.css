@@ -119,3 +119,15 @@ font-family: sans-serif;
 #table_dice {
     table-layout: fixed;
 }
+
+#home_form {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#home_form > input, #home_form > select {
+    margin: 2% 0;
+}
